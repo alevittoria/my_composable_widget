@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Hello World</string>
+    <string name="counter_description">Counter</string>
+    <string name="timestamp_description">Timestamp</string>
+</resources>
