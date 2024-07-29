@@ -17,11 +17,27 @@ import kotlinx.coroutines.launch
 
 @OptIn(DelicateCoroutinesApi::class)
 class TimeWidgetBroadcastReceiver : BroadcastReceiver() {
+
+
+    override fun onReceive(context: Context, intent: Intent) {
+        Log.d("TimeWidgetBroadcastReceiver", "onReceive: ${intent.action}")
+        if (intent.action == "${context.packageName}.${UPDATE_TIMESTAMP_ACTION}") {
+            val timestamp = intent.getLongExtra(TIMESTAMP_EXTRA, 0)
+            Log.d("TimeWidgetBroadcastReceiver", "onReceive: timestamp -> $timestamp")
+            GlobalScope.launch {
+                context.dataStore.edit {
+                    it[longPreferencesKey(TIMESTAMP_PREF_KEY_EXTRA)] = timestamp
+                }
+            }
+        }
+    }
+
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "time_widget_datastore")
 
         const val UPDATE_TIMESTAMP_ACTION = "UPDATE_TIMESTAMP"
-        const val TIMESTAMP_EXTRA = "timestamp"
+        const val TIMESTAMP_EXTRA = "timestamp_extra"
+        const val TIMESTAMP_PREF_KEY_EXTRA = "timestamp"
 
 
         fun updateTimestamp(context: Context, timestamp: Long) {
@@ -33,23 +49,8 @@ class TimeWidgetBroadcastReceiver : BroadcastReceiver() {
 
         fun getTimestamp(context: Context): Flow<Long> {
             return context.dataStore.data.map {
-                it[longPreferencesKey("timestamp")] ?: 0
+                it[longPreferencesKey(TIMESTAMP_PREF_KEY_EXTRA)] ?: 0
             }
         }
     }
-
-
-    override fun onReceive(context: Context, intent: Intent) {
-        Log.d("TimeWidgetBroadcastReceiver", "onReceive: ${intent.action}")
-        if (intent.action == "${context.packageName}.${UPDATE_TIMESTAMP_ACTION}") {
-            val timestamp = intent.getLongExtra(TIMESTAMP_EXTRA, 0)
-            Log.d("TimeWidgetBroadcastReceiver", "onReceive: timestamp -> $timestamp")
-            GlobalScope.launch {
-                context.dataStore.edit {
-                    it[longPreferencesKey("timestamp")] = timestamp
-                }
-            }
-        }
-    }
-
 }

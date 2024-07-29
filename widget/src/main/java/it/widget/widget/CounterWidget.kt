@@ -66,7 +66,6 @@ object CounterWidget : GlanceAppWidget() {
 
 class ChangeCountAction : ActionCallback {
 
-
     companion object {
         val countParam = ActionParameters.Key<Int>("count")
 

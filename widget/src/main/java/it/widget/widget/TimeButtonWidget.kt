@@ -79,8 +79,6 @@ object TimeButtonWidget : GlanceAppWidget() {
 }
 
 class UpdateTimestampAction : ActionCallback {
-
-
     companion object {
         val tsParam = ActionParameters.Key<Long>("tsParam")
     }
